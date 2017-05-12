@@ -832,6 +832,7 @@ public class SubversionSCM extends SCM implements Serializable {
         List<External> externals = null;
             externals = checkout(build,workspace,listener,env);
 
+        boolean buildDataAlreadyPresent = build.getAction(SubversionTagAction.class) != null;
         // write out the revision file
         PrintWriter w = new PrintWriter(new FileOutputStream(getRevisionFile(build)));
         try {
@@ -844,7 +845,9 @@ public class SubversionSCM extends SCM implements Serializable {
                     w.println( p.info.url +'/'+ p.info.revision);
                 revList.add(p.info);
             }
-            build.addAction(new SubversionTagAction(build,revList));
+            if (!buildDataAlreadyPresent) {
+                build.addAction(new SubversionTagAction(build, revList));
+            }
         } finally {
             w.close();
         }
@@ -856,7 +859,7 @@ public class SubversionSCM extends SCM implements Serializable {
             projectExternalsCache.put(build.getParent(), externals);
         }
 
-        if (changelogFile != null) {
+        if (!buildDataAlreadyPresent && changelogFile != null) {
             calcChangeLog(build, workspace, changelogFile, baseline, listener, externals, env);
         }
     }
