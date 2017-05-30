@@ -1343,11 +1343,15 @@ public class SubversionSCM extends SCM implements Serializable {
         final SVNRevisionState baseline;
         if (_baseline instanceof SVNRevisionState) {
             baseline = (SVNRevisionState) _baseline;
+          System.err.println("Baseline is at " + baseline.revisions + " - from _baseline " + _baseline);
         } else if (project.getLastBuild() != null) {
-            baseline = (SVNRevisionState) calcRevisionsFromBuild(project.getLastBuild(), launcher != null ? workspace
+          Run<?, ?> lastBuild = project.getLastBuild();
+          baseline = (SVNRevisionState) calcRevisionsFromBuild(lastBuild, launcher != null ? workspace
                     : null, launcher, listener);
+          System.err.println("Baseline is at " + baseline.revisions + " - from last build " + lastBuild.getNumber());
         } else {
             baseline = new SVNRevisionState(null);
+          System.err.println("Baseline is unknown");
         }
 
         // The job was never built before

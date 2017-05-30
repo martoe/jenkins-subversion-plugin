@@ -62,7 +62,7 @@ THE SOFTWARE.
   </scm>
 
   <properties>
-    <jenkins.version>1.609.3</jenkins.version>
+    <jenkins.version>2.46.3</jenkins.version>
     <java.level>6</java.level>
     <no-test-jar>false</no-test-jar>
     <workflow.version>1.14.2</workflow.version>
@@ -118,7 +118,7 @@ THE SOFTWARE.
     <dependency>
       <groupId>org.jenkins-ci.plugins.workflow</groupId>
       <artifactId>workflow-scm-step</artifactId>
-      <version>${workflow.version}</version>
+      <version>2.4</version>
       <exclusions>
         <exclusion>
           <groupId>org.apache.httpcomponents</groupId>
@@ -176,6 +176,16 @@ THE SOFTWARE.
       <version>${workflow.version}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins.workflow</groupId>
+      <artifactId>workflow-aggregator</artifactId>
+      <version>2.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins.workflow</groupId>
+      <artifactId>workflow-job</artifactId>
+      <version>2.10</version>
     </dependency>
   </dependencies>
 

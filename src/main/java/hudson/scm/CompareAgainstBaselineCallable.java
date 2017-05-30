@@ -56,6 +56,8 @@ final class CompareAgainstBaselineCallable extends MasterToSlaveCallable<Polling
      */
     public PollingResult call() throws IOException {
         listener.getLogger().println("Received SCM poll call on " + nodeName + " for " + projectName + " on " + DateFormat.getDateTimeInstance().format(new Date()) );
+        System.err.println("Received SCM poll call on " + nodeName + " for " + projectName + " on " + DateFormat.getDateTimeInstance().format(new Date()) );
+        new RuntimeException("Debugging callstack").printStackTrace();
         final Map<String,Long> revs = new HashMap<String,Long>();
         boolean changes = false;
         boolean significantChanges = false;
@@ -81,10 +83,14 @@ final class CompareAgainstBaselineCallable extends MasterToSlaveCallable<Polling
                 changes |= (nowRev>baseRev);
 
                 listener.getLogger().println(Messages.SubversionSCM_pollChanges_remoteRevisionAt(url, nowRev));
+                System.err.println(Messages.SubversionSCM_pollChanges_remoteRevisionAt(url, nowRev));
                 revs.put(url, nowRev);
                 // make sure there's a change and it isn't excluded
+                System.err.println("Searching for changes between " + (baseRev+1) + " and " + nowRev);
+
                 if (logHandler.findNonExcludedChanges(svnurl, baseRev+1, nowRev, authProvider)) {
                     listener.getLogger().println(Messages.SubversionSCM_pollChanges_changedFrom(baseRev));
+                    System.err.println("Significant changes between " + (baseRev+1) + " and " + nowRev);
                     significantChanges = true;
                 }
             } catch (SVNException e) {
@@ -92,7 +98,9 @@ final class CompareAgainstBaselineCallable extends MasterToSlaveCallable<Polling
             }
         }
         assert revs.size()== baseline.revisions.size();
+        Change change = significantChanges ? Change.SIGNIFICANT : changes ? Change.INSIGNIFICANT : Change.NONE;
+        System.err.println(change);
         return new PollingResult(baseline,new SVNRevisionState(revs),
-                significantChanges ? Change.SIGNIFICANT : changes ? Change.INSIGNIFICANT : Change.NONE);
+          change);
     }
 }
